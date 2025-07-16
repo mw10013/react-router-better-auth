@@ -1,3 +1,10 @@
+
+```
+pnpm exec cli generate
+pnpm env -g use 20.19.4
+pnpm env -g list
+```
+
 # Welcome to React Router!
 
 A modern, production-ready template for building full-stack React applications using React Router.
