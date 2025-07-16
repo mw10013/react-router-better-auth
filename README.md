@@ -1,6 +1,7 @@
 
 ```
 pnpm exec cli generate
+pnpm exec cli migrate
 pnpm env -g use 20.19.4
 pnpm env -g list
 ```
