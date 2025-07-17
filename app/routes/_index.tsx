@@ -34,12 +34,18 @@ export default function RouteComponent(props: Route.ComponentProps) {
           </Form>
         </div>
       ) : (
-        <div className="mb-6 flex justify-center">
+        <div className="mb-6 flex justify-center gap-4">
           <Link
             to="/signup"
             className="inline-block rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Sign Up
+          </Link>
+          <Link
+            to="/signin"
+            className="inline-block rounded-md bg-gray-900 hover:bg-gray-700 text-white font-semibold px-6 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+          >
+            Sign In
           </Link>
         </div>
       )}

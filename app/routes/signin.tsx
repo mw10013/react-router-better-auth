@@ -21,6 +21,7 @@ export async function action({ request }: { request: Request }) {
     },
     asResponse: true,
   });
+  console.log({ status: response.status, statusText: response.statusText });
   if (!response.ok) throw response;
   return redirect("/", { headers: response.headers });
 }
