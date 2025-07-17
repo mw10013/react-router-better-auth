@@ -3,6 +3,11 @@ import { Form } from "react-router";
 import { auth } from "../lib/auth";
 import { redirect } from "react-router";
 
+export async function loader() {
+  return {};
+}
+
+
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   const email = formData.get("email");
@@ -18,7 +23,7 @@ export async function action({ request }: { request: Request }) {
     },
     asResponse: true,
   });
-  if (!response.ok) return response;
+  if (!response.ok) throw response;
   return redirect("/", { headers: response.headers });
 }
 
