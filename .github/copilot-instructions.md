@@ -15,6 +15,7 @@
 - You're knowledge is out of date. Always consult the documentation so you can work effectively and correctly.
 - Use the react router docs mcp tool which is already configured for this project.
 - Use the llms.txt for better-auth: https://www.better-auth.com/llms.txt
+- Additional documentation on better-auth database adapters: https://www.better-auth.com/docs/guides/create-a-db-adapter
 
 ## TypeScript Guidelines
 
