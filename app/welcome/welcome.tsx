@@ -25,6 +25,28 @@ export function Welcome() {
               What&apos;s next?
             </p>
             <ul>
+              <li key="signup">
+                <a
+                  className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
+                  href="/signup"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    className="stroke-gray-600 group-hover:stroke-current dark:stroke-gray-300"
+                  >
+                    <path
+                      d="M10 10a4 4 0 100-8 4 4 0 000 8zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  Sign Up
+                </a>
+              </li>
               {resources.map(({ href, text, icon }) => (
                 <li key={href}>
                   <a
