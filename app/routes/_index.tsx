@@ -1,6 +1,6 @@
 import { auth } from "~/lib/auth";
 import type { Route } from "./+types/_index";
-import { Link } from "react-router";
+import { Link, Form } from "react-router";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await auth.api.getSession({ headers: request.headers });
@@ -17,7 +17,23 @@ export function meta() {
 export default function RouteComponent(props: Route.ComponentProps) {
   return (
     <main className="p-8">
-      {!props.loaderData?.user && (
+      {props.loaderData?.user ? (
+        <div className="mb-6 flex justify-center">
+          <Form
+            method="post"
+            action="/signout"
+            className="w-full max-w-xs"
+            replace
+          >
+            <button
+              type="submit"
+              className="w-full rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Sign Out
+            </button>
+          </Form>
+        </div>
+      ) : (
         <div className="mb-6 flex justify-center">
           <Link
             to="/signup"

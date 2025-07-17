@@ -1,4 +1,4 @@
-import type { Route } from "./+types/signup";
+import type { Route } from "./+types/signin";
 import { Form } from "react-router";
 import { auth } from "../lib/auth";
 import { redirect } from "react-router";
@@ -14,19 +14,14 @@ export async function action({ request }: { request: Request }) {
   if (typeof email !== "string" || typeof password !== "string") {
     throw new Error("Invalid form data");
   }
-  const response = await auth.api.signUpEmail({
+  const response = await auth.api.signInEmail({
     body: {
       email,
       password,
-      name: "",
     },
     asResponse: true,
   });
-  if (!response.ok) {
-    // better-auth returns 422 UNPROCESSABLE_ENTITY with { code: 'USER_ALREADY_EXISTS', ... } when an existing user tries to sign up again
-    if (response.status === 422) return redirect("/signin");
-    throw response;
-  }
+  if (!response.ok) throw response;
   return redirect("/", { headers: response.headers });
 }
 
@@ -37,7 +32,7 @@ export default function RouteComponent() {
       className="mx-auto w-full max-w-sm rounded-lg bg-white dark:bg-gray-800 shadow-lg p-8 space-y-6"
     >
       <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-        Sign Up
+        Sign In
       </h2>
       <div>
         <label
@@ -68,14 +63,14 @@ export default function RouteComponent() {
           name="password"
           required
           className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 outline-none"
-          autoComplete="new-password"
+          autoComplete="current-password"
         />
       </div>
       <button
         type="submit"
         className="w-full py-2 px-4 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
-        Sign Up
+        Sign In
       </button>
     </Form>
   );
