@@ -7,7 +7,6 @@ export async function loader() {
   return {};
 }
 
-
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   const email = formData.get("email");
