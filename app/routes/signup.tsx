@@ -1,3 +1,4 @@
+import type { Route } from "./+types/signup";
 import { Form } from "react-router";
 import { auth } from "../lib/auth";
 import { redirect } from "react-router";
@@ -9,20 +10,16 @@ export async function action({ request }: { request: Request }) {
   if (typeof email !== "string" || typeof password !== "string") {
     throw new Error("Invalid form data");
   }
-  try {
-    // Sign up user
-    await auth.api.signUpEmail({
-      body: {
-        email,
-        password,
-        name: "",
-      },
-    });
-    // Redirect to home
-    return redirect("/");
-  } catch (err) {
-    throw err;
-  }
+  const response = await auth.api.signUpEmail({
+    body: {
+      email,
+      password,
+      name: "",
+    },
+    asResponse: true,
+  });
+  if (!response.ok) return response;
+  return redirect("/", { headers: response.headers });
 }
 
 export default function RouteComponent() {
