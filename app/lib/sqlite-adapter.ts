@@ -1,7 +1,7 @@
 import { createAdapter } from "better-auth/adapters";
-import type { Database as DatabaseType } from "better-sqlite3";
+import type { Database } from "better-sqlite3";
 
-export const sqliteAdapter = (db: DatabaseType) =>
+export const sqliteAdapter = (db: Database) =>
   createAdapter({
     config: {
       adapterId: "sqlite-logger",
