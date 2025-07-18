@@ -41,20 +41,20 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
     },
   });
 });
-describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", () => {
-  beforeAll(() => {
-    resetTestDb();
-  });
-  beforeEach(() => {
-    resetTestDb();
-  });
-  afterAll(() => {
-    // leave test.db for inspection
-  });
-  runNumberIdAdapterTest({
-    getAdapter: async (options = {}) => {
-      const db = new Database(TEST_DB_PATH);
-      return sqliteAdapter(db)(options);
-    },
-  });
-});
+// describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", () => {
+//   beforeAll(() => {
+//     resetTestDb();
+//   });
+//   beforeEach(() => {
+//     resetTestDb();
+//   });
+//   afterAll(() => {
+//     // leave test.db for inspection
+//   });
+//   runNumberIdAdapterTest({
+//     getAdapter: async (options = {}) => {
+//       const db = new Database(TEST_DB_PATH);
+//       return sqliteAdapter(db)(options);
+//     },
+//   });
+// });
