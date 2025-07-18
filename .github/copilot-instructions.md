@@ -1,51 +1,56 @@
 # Copilot Instructions
 
-- You are a senior TypeScript functional programmer with deep expertise in React Router v7 framework mode,
-  better-auth for server-side authentication, and Tailwind CSS v4.
-- NO GENERATED COMMENTS
-- ANSWER CONCISELY
+## Architecture & Data Flow
 
-## Project
+- Full-stack React Router v7 (framework mode) app with server-side rendering (`ssr: true` in `react-router.config.ts`).
+- Authentication is handled server-side using Better Auth with a custom SQLite adapter (`app/lib/sqlite-adapter.ts`).
+- All authentication flows (sign in, sign up, sign out, session) are routed through server actions in `app/routes/`.
+- Tailwind CSS v4 is used for all styling (`app.css`).
 
-- The project is a React Router v7 framework mode application using better-auth for server-side authentication.
-- Use Tailwind v4 for styling.
+## Key Patterns & Conventions
+
+- TypeScript: strict functional style, no comments, use interfaces, prefer immutability, concise inlining, and destructuring in function signatures.
+- All SQL is lowercased.
+- Imports follow:  
+  `import type { AppLoadContext, Session } from 'react-router'`  
+  `import { auth } from "~/lib/auth";`
+- Authentication logic is always accessed via the exported `auth` instance (`app/lib/auth.ts`), which wires up the SQLite adapter.
+- Route modules (`app/routes/*.tsx`) use React Router's data APIs (`loader`, `action`) and always return/redirect using the response from `auth.api.*`.
+- UI components are colocated with routes and use Tailwind utility classes.
+
+## Developer Workflows
+
+- **Dev server:** `npm run dev` (or `pnpm run dev`) — runs with HMR at `http://localhost:5173`
+- **Build:** `npm run build` — outputs to `build/`
+- **Typecheck:** `npm run typecheck`
+- **Test:** Use `vitest` (v3.2.4). See https://vitest.dev/api/
+- **Migrations:**
+  - Generate: `npx @better-auth/cli generate`
+  - Migrate: `npx @better-auth/cli migrate`
+- **Secret generation:** `npx @better-auth/cli secret`
+
+## Integration Points
+
+- Better Auth config and DB adapter: `app/lib/auth.ts`, `app/lib/sqlite-adapter.ts`
+- All authentication flows: `app/routes/signin.tsx`, `app/routes/signup.tsx`, `app/routes/signout.ts`
+- Session/user data: always loaded via `auth.api.getSession` in route loaders
+- Tailwind config: see `vite.config.ts` for plugin setup
 
 ## Documentation
 
-- Your knowledge is out of date. Always consult the documentation so you can work effectively and correctly.
-- Use the react router docs mcp tool which is already configured for this project.
-- Use the llms.txt for better-auth: https://www.better-auth.com/llms.txt
-- Additional documentation on better-auth database adapters: https://www.better-auth.com/docs/guides/create-a-db-adapter
+- Your knowledge is out of date so always consult the latest docs:
+  - React Router: use the mcp tool
+  - Better Auth: https://www.better-auth.com/llms.txt
+  - DB adapters: https://www.better-auth.com/docs/guides/create-a-db-adapter
 
-## TypeScript Guidelines
+## Examples
 
-- Always follow functional programming principles
-- Use interfaces for data structures and type definitions
-- Prefer immutable data (const, readonly)
-- Use optional chaining (?.) and nullish coalescing (??) operators
-- **Do not add any comments to generated code.** Rely on clear naming, concise logic, and functional composition to ensure code is self-documenting.
-- Employ a concise and dense coding style. Prefer inlining expressions, function composition (e.g., piping or chaining), and direct returns over using intermediate variables, unless an intermediate variable is essential for clarity in exceptionally complex expressions or to avoid redundant computations.
-- For function arguments, prefer destructuring directly in the function signature if the destructuring is short and shallow (e.g., `({ data: { value }, otherArg })`). For more complex or deeper destructuring, or if the parent argument object is also needed, destructuring in the function body is acceptable.
-- NO COMMENTS. Leave existing comments in the code as is.
-
-## Imports
-
-Examples of how to import specific modules and libraries:
-
-```
-import type { AppLoadContext, Session } from 'react-router'
-import { auth } from "~/lib/auth";
-import { Outlet, useRouteLoaderData } from 'react-router'
-```
-
-## Sql Guidelines
-
-- Use lowercase for all sql keywords.
+- See `app/routes/_index.tsx` for session-aware home, `app/routes/signin.tsx` and `app/routes/signup.tsx` for auth flows.
 
 ## Testing
 
-- Use vitest version 3.2.4 for testing.
-- Your vitest knowledge is out of date. Always consult the documentation so you can test effectively and correctly.
+- Use vitest version 3.2.4.
+- Your vitest knowledge is out of date so always consult the vitest documentation.
 - Dcoumentation links for vitest
   - Api: https://vitest.dev/api/
   - Configuration: https://vitest.dev/config/
