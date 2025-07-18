@@ -20,14 +20,10 @@
 
 ## Developer Workflows
 
-- **Dev server:** `npm run dev` (or `pnpm run dev`) — runs with HMR at `http://localhost:5173`
-- **Build:** `npm run build` — outputs to `build/`
-- **Typecheck:** `npm run typecheck`
-- **Test:** Use `vitest` (v3.2.4). See https://vitest.dev/api/
-- **Migrations:**
-  - Generate: `npx @better-auth/cli generate`
-  - Migrate: `npx @better-auth/cli migrate`
-- **Secret generation:** `npx @better-auth/cli secret`
+- Always use pnpm for all install, add, remove, and script commands (e.g., pnpm install, pnpm test).
+- **Dev server:** `pnpm dev` — runs with HMR at `http://localhost:5173`
+- **Build:** `pnpm build` — outputs to `build/`
+- **Typecheck:** `pnpm typecheck`
 
 ## Integration Points
 
