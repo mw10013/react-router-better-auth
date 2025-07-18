@@ -9,6 +9,9 @@ const sqliteAdapter = createAdapter({
     adapterId: "sqlite-logger",
     adapterName: "SQLite Logger Adapter",
     supportsNumericIds: true,
+    supportsDates: false,
+    supportsBooleans: false,
+    debugLogs: true,
   },
   adapter: () => {
     const whereToSql = (where?: Array<{ field: string; value: any }>) => {
@@ -21,10 +24,7 @@ const sqliteAdapter = createAdapter({
       async create({ model, data }) {
         console.log("[adapter] create", { model, data });
         const keys = Object.keys(data);
-        const values = keys.map((k) => {
-          const v = data[k];
-          return v instanceof Date ? v.toISOString() : v;
-        });
+        const values = keys.map((k) => data[k]);
         const placeholders = keys.map(() => "?").join(",");
         const stmt = db.prepare(
           `insert into ${model} (${keys.join(",")}) values (${placeholders})`
@@ -46,9 +46,7 @@ const sqliteAdapter = createAdapter({
         const set = Object.keys(update as object)
           .map((k) => `${k} = ?`)
           .join(",");
-        const setValues = Object.values(update as object).map((v) =>
-          v instanceof Date ? v.toISOString() : v
-        );
+        const setValues = Object.values(update as object);
         const { clause, values } = whereToSql(where);
         const stmt = db.prepare(
           `update ${model} set ${set}${clause ? ` where ${clause}` : ""}`
@@ -74,9 +72,7 @@ const sqliteAdapter = createAdapter({
         const set = Object.keys(update as object)
           .map((k) => `${k} = ?`)
           .join(",");
-        const setValues = Object.values(update as object).map((v) =>
-          v instanceof Date ? v.toISOString() : v
-        );
+        const setValues = Object.values(update as object);
         const { clause, values } = whereToSql(where);
         const stmt = db.prepare(
           `update ${model} set ${set}${clause ? ` where ${clause}` : ""}`
