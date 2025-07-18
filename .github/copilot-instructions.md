@@ -12,7 +12,7 @@
 
 ## Documentation
 
-- You're knowledge is out of date. Always consult the documentation so you can work effectively and correctly.
+- Your knowledge is out of date. Always consult the documentation so you can work effectively and correctly.
 - Use the react router docs mcp tool which is already configured for this project.
 - Use the llms.txt for better-auth: https://www.better-auth.com/llms.txt
 - Additional documentation on better-auth database adapters: https://www.better-auth.com/docs/guides/create-a-db-adapter
@@ -41,3 +41,13 @@ import { Outlet, useRouteLoaderData } from 'react-router'
 ## Sql Guidelines
 
 - Use lowercase for all sql keywords.
+
+## Testing
+
+- Use vitest version 3.2.4 for testing.
+- Your vitest knowledge is out of date. Always consult the documentation so you can test effectively and correctly.
+- Dcoumentation links for vitest
+  - Api: https://vitest.dev/api/
+  - Configuration: https://vitest.dev/config/
+  - Expect: https://vitest.dev/api/expect.html
+  - Assert: https://vitest.dev/api/assert.html
