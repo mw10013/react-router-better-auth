@@ -69,6 +69,88 @@ export const sqliteAdapter = (db: Database) =>
         });
         return result as any;
       };
+
+      const updateMany: CustomAdapter["updateMany"] = async ({
+        model: rawModel,
+        where,
+        update,
+      }) => {
+        const model = capitalize(rawModel);
+        const set = Object.keys(update as object)
+          .map((k) => `${k} = ?`)
+          .join(",");
+        const setValues = Object.values(update as object);
+        const { clause, values } = whereToSql(where);
+        const stmt = db.prepare(
+          `update ${model} set ${set}${clause ? ` where ${clause}` : ""}`
+        );
+        const info = stmt.run(...setValues, ...values);
+        return info.changes;
+      };
+
+      const del: CustomAdapter["delete"] = async ({
+        model: rawModel,
+        where,
+      }) => {
+        const model = capitalize(rawModel);
+        const { clause, values } = whereToSql(where);
+        const stmt = db.prepare(
+          `delete from ${model}${clause ? ` where ${clause}` : ""}`
+        );
+        stmt.run(...values);
+      };
+
+      const deleteMany: CustomAdapter["deleteMany"] = async ({
+        model: rawModel,
+        where,
+      }) => {
+        const model = capitalize(rawModel);
+        const { clause, values } = whereToSql(where);
+        const stmt = db.prepare(
+          `delete from ${model}${clause ? ` where ${clause}` : ""}`
+        );
+        const info = stmt.run(...values);
+        return info.changes;
+      };
+
+      const count: CustomAdapter["count"] = async ({
+        model: rawModel,
+        where,
+      }) => {
+        const model = capitalize(rawModel);
+        let sql = `select count(*) as count from ${model}`;
+        const params = [];
+        if (where && where.length) {
+          const { clause, values } = whereToSql(where);
+          sql += ` where ${clause}`;
+          params.push(...values);
+        }
+        const stmt = db.prepare(sql);
+        const row = stmt.get(...params) as
+          | { count?: number | string }
+          | undefined;
+        const result = row && row.count !== undefined ? Number(row.count) : 0;
+        return result;
+      };
+      const findMany: CustomAdapter["findMany"] = async <T = any>(
+        args: Parameters<CustomAdapter["findMany"]>[0]
+      ): Promise<T[]> => {
+        const { model: rawModel, where, limit, sortBy, offset } = args;
+        const model = capitalize(rawModel);
+        let sql = `select * from ${model}`;
+        const params: any[] = [];
+        if (where && where.length) {
+          const { clause, values } = whereToSql(where);
+          sql += ` where ${clause}`;
+          params.push(...values);
+        }
+        if (sortBy) sql += ` order by ${sortBy.field} ${sortBy.direction}`;
+        if (limit) sql += ` limit ${limit}`;
+        if (offset) sql += ` offset ${offset}`;
+        const stmt = db.prepare(sql);
+        const result = stmt.all(...params) as T[];
+        return result;
+      };
       const update: CustomAdapter["update"] = async ({
         model: rawModel,
         where,
@@ -102,95 +184,12 @@ export const sqliteAdapter = (db: Database) =>
       return {
         create,
         findOne,
+        findMany,
         update,
-        async updateMany<T = any>({
-          model: rawModel,
-          where,
-          update,
-        }: {
-          model: string;
-          where: Array<{ field: string; value: any }>;
-          update: T;
-        }): Promise<number> {
-          const model = capitalize(rawModel);
-          const set = Object.keys(update as object)
-            .map((k) => `${k} = ?`)
-            .join(",");
-          const setValues = Object.values(update as object);
-          const { clause, values } = whereToSql(where);
-          const stmt = db.prepare(
-            `update ${model} set ${set}${clause ? ` where ${clause}` : ""}`
-          );
-          const info = stmt.run(...setValues, ...values);
-          return info.changes;
-        },
-        async delete({ model: rawModel, where }) {
-          const model = capitalize(rawModel);
-          const { clause, values } = whereToSql(where);
-          const stmt = db.prepare(
-            `delete from ${model}${clause ? ` where ${clause}` : ""}`
-          );
-          stmt.run(...values);
-        },
-        async deleteMany({ model: rawModel, where }) {
-          const model = capitalize(rawModel);
-          const { clause, values } = whereToSql(where);
-          const stmt = db.prepare(
-            `delete from ${model}${clause ? ` where ${clause}` : ""}`
-          );
-          const info = stmt.run(...values);
-          return info.changes;
-        },
-        async findMany<T = any>({
-          model: rawModel,
-          where,
-          limit,
-          sortBy,
-          offset,
-        }: {
-          model: string;
-          where?: Array<{ field: string; value: any }>;
-          limit: number;
-          sortBy?: { field: string; direction: "asc" | "desc" };
-          offset?: number;
-        }): Promise<T[]> {
-          const model = capitalize(rawModel);
-          let sql = `select * from ${model}`;
-          const params = [];
-          if (where && where.length) {
-            const { clause, values } = whereToSql(where);
-            sql += ` where ${clause}`;
-            params.push(...values);
-          }
-          if (sortBy) sql += ` order by ${sortBy.field} ${sortBy.direction}`;
-          if (limit) sql += ` limit ${limit}`;
-          if (offset) sql += ` offset ${offset}`;
-          const stmt = db.prepare(sql);
-          const result = stmt.all(...params) as T[];
-          return result;
-        },
-        async count({
-          model: rawModel,
-          where,
-        }: {
-          model: string;
-          where?: Array<{ field: string; value: any }>;
-        }): Promise<number> {
-          const model = capitalize(rawModel);
-          let sql = `select count(*) as count from ${model}`;
-          const params = [];
-          if (where && where.length) {
-            const { clause, values } = whereToSql(where);
-            sql += ` where ${clause}`;
-            params.push(...values);
-          }
-          const stmt = db.prepare(sql);
-          const row = stmt.get(...params) as
-            | { count?: number | string }
-            | undefined;
-          const result = row && row.count !== undefined ? Number(row.count) : 0;
-          return result;
-        },
+        updateMany,
+        delete: del,
+        deleteMany,
+        count,
       };
     },
   });
