@@ -42,8 +42,8 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
       FIND_MODEL: false,
       FIND_MODEL_WITHOUT_ID: false,
       FIND_MODEL_WITH_SELECT: false,
-      FIND_MODEL_WITH_MODIFIED_FIELD_NAME: true,
-      UPDATE_MODEL: true,
+      FIND_MODEL_WITH_MODIFIED_FIELD_NAME: true, // Disable since we do not handle email_address vs email
+      UPDATE_MODEL: false,
       SHOULD_FIND_MANY: true,
       SHOULD_FIND_MANY_WITH_WHERE: true,
       SHOULD_FIND_MANY_WITH_OPERATORS: true,
