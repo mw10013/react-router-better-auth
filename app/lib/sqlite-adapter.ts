@@ -14,6 +14,7 @@ export const sqliteAdapter = (db: Database) =>
       supportsNumericIds: true,
       supportsDates: false,
       supportsBooleans: false,
+      disableIdGeneration: true,
       debugLogs: true,
     },
     adapter: () => {
@@ -25,18 +26,24 @@ export const sqliteAdapter = (db: Database) =>
         return { clause, values };
       };
       return {
-        async create({ model: rawModel, data }) {
+        async create<T extends Record<string, any>>({
+          model: rawModel,
+          data,
+        }: {
+          model: string;
+          data: T;
+          select?: string[];
+        }): Promise<T> {
           const model = capitalize(rawModel);
           const keys = Object.keys(data);
           const values = keys.map((k) => data[k]);
           const placeholders = keys.map(() => "?").join(",");
           const sql = `insert into ${model} (${keys.join(
             ","
-          )}) values (${placeholders})`;
+          )}) values (${placeholders}) returning *`;
           console.log("create", { model, keys, values, placeholders, sql });
           const stmt = db.prepare(sql);
-          stmt.run(...values);
-          return data;
+          return stmt.get(...values) as T;
         },
         async update<T = any>({
           model: rawModel,
