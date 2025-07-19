@@ -67,8 +67,7 @@ export const sqliteAdapter = (db: Database) =>
           sql,
           result,
         });
-
-        return (result as any) ?? null;
+        return result as any;
       };
       return {
         create,
