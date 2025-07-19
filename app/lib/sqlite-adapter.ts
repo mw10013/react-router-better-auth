@@ -43,8 +43,25 @@ export const sqliteAdapter = (db: Database) =>
         const stmt = db.prepare(sql);
         return stmt.get(...values) as typeof data;
       };
+      const findOne: CustomAdapter["findOne"] = async ({
+        model: rawModel,
+        where,
+        select,
+      }) => {
+        const model = capitalize(rawModel);
+        const { clause, values } = whereToSql(where);
+        const fields = select && select.length ? select.join(",") : "*";
+        const stmt = db.prepare(
+          `select ${fields} from ${model} ${
+            clause ? `where ${clause}` : ""
+          } limit 1`
+        );
+        const result = stmt.get(...values);
+        return (result as any) ?? null;
+      };
       return {
         create,
+        findOne,
         async update<T = any>({
           model: rawModel,
           where,
@@ -107,18 +124,6 @@ export const sqliteAdapter = (db: Database) =>
           );
           const info = stmt.run(...values);
           return info.changes;
-        },
-        async findOne<T = any>({
-          model: rawModel,
-          where,
-        }: Parameters<CustomAdapter["findOne"]>[0]): Promise<T | null> {
-          const model = capitalize(rawModel);
-          const { clause, values } = whereToSql(where);
-          const stmt = db.prepare(
-            `select * from ${model} ${clause ? `where ${clause}` : ""} limit 1`
-          );
-          const result = stmt.get(...values);
-          return (result as T) ?? null;
         },
         async findMany<T = any>({
           model: rawModel,
