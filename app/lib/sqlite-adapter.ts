@@ -69,34 +69,40 @@ export const sqliteAdapter = (db: Database) =>
         });
         return result as any;
       };
+      const update: CustomAdapter["update"] = async ({
+        model: rawModel,
+        where,
+        update,
+      }) => {
+        const model = capitalize(rawModel);
+        const set = Object.keys(update as object)
+          .map((k) => `${k} = ?`)
+          .join(",");
+        const setValues = Object.values(update as object);
+        const { clause, values } = whereToSql(where);
+        const sql = `update ${model} set ${set}${
+          clause ? ` where ${clause}` : ""
+        } returning *`;
+        const stmt = db.prepare(sql);
+        const result = (stmt.get(...setValues, ...values) as any) ?? null;
+        console.log("update", {
+          rawModel,
+          model,
+          where,
+          update,
+          set,
+          setValues,
+          clause,
+          values,
+          sql,
+          result,
+        });
+        return result;
+      };
       return {
         create,
         findOne,
-        async update<T = any>({
-          model: rawModel,
-          where,
-          update,
-        }: {
-          model: string;
-          where: Array<{ field: string; value: any }>;
-          update: T;
-        }): Promise<T | null> {
-          const model = capitalize(rawModel);
-          const set = Object.keys(update as object)
-            .map((k) => `${k} = ?`)
-            .join(",");
-          const setValues = Object.values(update as object);
-          const { clause, values } = whereToSql(where);
-          const stmt = db.prepare(
-            `update ${model} set ${set}${clause ? ` where ${clause}` : ""}`
-          );
-          stmt.run(...setValues, ...values);
-          const selectStmt = db.prepare(
-            `select * from ${model}${clause ? ` where ${clause}` : ""} limit 1`
-          );
-          const result = (selectStmt.get(...values) as T) ?? null;
-          return result;
-        },
+        update,
         async updateMany<T = any>({
           model: rawModel,
           where,
