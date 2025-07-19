@@ -20,6 +20,15 @@ function resetTestDb() {
   const db = new Database(TEST_DB_PATH);
   const schema = fs.readFileSync(SCHEMA_PATH, "utf8");
   db.exec(schema);
+
+  // Insert a sample user for testing
+  // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
+  // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
+  db.exec(`
+insert into User (name, email, emailVerified, createdAt, updatedAt) 
+values ('John Doe', 'john@example.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
+  `);
+
   db.close();
 }
 
@@ -45,8 +54,8 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
       FIND_MODEL_WITH_MODIFIED_FIELD_NAME: true, // Disable since we do not handle email_address vs email
       UPDATE_MODEL: false,
       SHOULD_FIND_MANY: false,
-      SHOULD_FIND_MANY_WITH_WHERE: true,
-      SHOULD_FIND_MANY_WITH_OPERATORS: true,
+      SHOULD_FIND_MANY_WITH_WHERE: false,
+      SHOULD_FIND_MANY_WITH_OPERATORS: false,
       SHOULD_WORK_WITH_REFERENCE_FIELDS: true,
       SHOULD_FIND_MANY_WITH_SORT_BY: true,
       SHOULD_FIND_MANY_WITH_LIMIT: true,
