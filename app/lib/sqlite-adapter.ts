@@ -1,5 +1,8 @@
-import { createAdapter } from "better-auth/adapters";
+import { createAdapter, type CreateCustomAdapter } from "better-auth/adapters";
 import type { Database } from "better-sqlite3";
+
+type CustomAdapter = ReturnType<CreateCustomAdapter>;
+type FindOneArgs = Parameters<CustomAdapter["findOne"]>[0];
 
 /**
  * Better Auth test harness passes model names in lower-case (e.g., 'user'),
@@ -111,6 +114,18 @@ export const sqliteAdapter = (db: Database) =>
         async findOne<T = any>({
           model: rawModel,
           where,
+        }: Parameters<CustomAdapter["findOne"]>[0]): Promise<T | null> {
+          const model = capitalize(rawModel);
+          const { clause, values } = whereToSql(where);
+          const stmt = db.prepare(
+            `select * from ${model} ${clause ? `where ${clause}` : ""} limit 1`
+          );
+          const result = stmt.get(...values);
+          return (result as T) ?? null;
+        },
+        async findOne_<T = any>({
+          model: rawModel,
+          where,
         }: {
           model: string;
           where: Array<{ field: string; value: any }>;
@@ -118,7 +133,7 @@ export const sqliteAdapter = (db: Database) =>
           const model = capitalize(rawModel);
           const { clause, values } = whereToSql(where);
           const stmt = db.prepare(
-            `select * from ${model}${clause ? ` where ${clause}` : ""} limit 1`
+            `select * from ${model} ${clause ? `where ${clause}` : ""} limit 1`
           );
           const result = stmt.get(...values);
           return (result as T) ?? null;

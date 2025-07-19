@@ -40,7 +40,8 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
       return sqliteAdapter(db)(options);
     },
     disableTests: {
-      CREATE_MODEL_SHOULD_ALWAYS_RETURN_AN_ID: true,
+      CREATE_MODEL: false,
+      CREATE_MODEL_SHOULD_ALWAYS_RETURN_AN_ID: false,
       FIND_MODEL: true,
       FIND_MODEL_WITHOUT_ID: true,
       FIND_MODEL_WITH_SELECT: true,
