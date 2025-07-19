@@ -132,10 +132,13 @@ export const sqliteAdapter = (db: Database) =>
         const result = row && row.count !== undefined ? Number(row.count) : 0;
         return result;
       };
-      const findMany: CustomAdapter["findMany"] = async <T = any>(
-        args: Parameters<CustomAdapter["findMany"]>[0]
-      ): Promise<T[]> => {
-        const { model: rawModel, where, limit, sortBy, offset } = args;
+      const findMany: CustomAdapter["findMany"] = async ({
+        model: rawModel,
+        where,
+        limit,
+        sortBy,
+        offset,
+      }) => {
         const model = capitalize(rawModel);
         let sql = `select * from ${model}`;
         const params: any[] = [];
@@ -147,8 +150,20 @@ export const sqliteAdapter = (db: Database) =>
         if (sortBy) sql += ` order by ${sortBy.field} ${sortBy.direction}`;
         if (limit) sql += ` limit ${limit}`;
         if (offset) sql += ` offset ${offset}`;
+        console.log("findMany", {
+          rawModel,
+          model,
+          where,
+          // clause,
+          // values,
+          sortBy,
+          limit,
+          offset,
+          sql,
+          params,
+        });
         const stmt = db.prepare(sql);
-        const result = stmt.all(...params) as T[];
+        const result = stmt.all(...params) as any[];
         return result;
       };
       const update: CustomAdapter["update"] = async ({
