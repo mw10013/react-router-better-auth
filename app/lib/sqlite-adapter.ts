@@ -28,26 +28,23 @@ export const sqliteAdapter = (db: Database) =>
         const values = where.map((w) => w.value);
         return { clause, values };
       };
+      const create: CustomAdapter["create"] = async ({
+        model: rawModel,
+        data,
+      }) => {
+        const model = capitalize(rawModel);
+        const keys = Object.keys(data);
+        const values = keys.map((k) => data[k]);
+        const placeholders = keys.map(() => "?").join(",");
+        const sql = `insert into ${model} (${keys.join(
+          ","
+        )}) values (${placeholders}) returning *`;
+        console.log("create", { model, keys, values, placeholders, sql });
+        const stmt = db.prepare(sql);
+        return stmt.get(...values) as typeof data;
+      };
       return {
-        async create<T extends Record<string, any>>({
-          model: rawModel,
-          data,
-        }: {
-          model: string;
-          data: T;
-          select?: string[];
-        }): Promise<T> {
-          const model = capitalize(rawModel);
-          const keys = Object.keys(data);
-          const values = keys.map((k) => data[k]);
-          const placeholders = keys.map(() => "?").join(",");
-          const sql = `insert into ${model} (${keys.join(
-            ","
-          )}) values (${placeholders}) returning *`;
-          console.log("create", { model, keys, values, placeholders, sql });
-          const stmt = db.prepare(sql);
-          return stmt.get(...values) as T;
-        },
+        create,
         async update<T = any>({
           model: rawModel,
           where,
@@ -115,21 +112,6 @@ export const sqliteAdapter = (db: Database) =>
           model: rawModel,
           where,
         }: Parameters<CustomAdapter["findOne"]>[0]): Promise<T | null> {
-          const model = capitalize(rawModel);
-          const { clause, values } = whereToSql(where);
-          const stmt = db.prepare(
-            `select * from ${model} ${clause ? `where ${clause}` : ""} limit 1`
-          );
-          const result = stmt.get(...values);
-          return (result as T) ?? null;
-        },
-        async findOne_<T = any>({
-          model: rawModel,
-          where,
-        }: {
-          model: string;
-          where: Array<{ field: string; value: any }>;
-        }): Promise<T | null> {
           const model = capitalize(rawModel);
           const { clause, values } = whereToSql(where);
           const stmt = db.prepare(
