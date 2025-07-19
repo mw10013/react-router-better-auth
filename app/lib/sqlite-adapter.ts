@@ -30,9 +30,11 @@ export const sqliteAdapter = (db: Database) =>
           const keys = Object.keys(data);
           const values = keys.map((k) => data[k]);
           const placeholders = keys.map(() => "?").join(",");
-          const stmt = db.prepare(
-            `insert into ${model} (${keys.join(",")}) values (${placeholders})`
-          );
+          const sql = `insert into ${model} (${keys.join(
+            ","
+          )}) values (${placeholders})`;
+          console.log("create", { model, keys, values, placeholders, sql });
+          const stmt = db.prepare(sql);
           stmt.run(...values);
           return data;
         },
