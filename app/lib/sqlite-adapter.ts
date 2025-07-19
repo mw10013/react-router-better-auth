@@ -51,12 +51,23 @@ export const sqliteAdapter = (db: Database) =>
         const model = capitalize(rawModel);
         const { clause, values } = whereToSql(where);
         const fields = select && select.length ? select.join(",") : "*";
-        const stmt = db.prepare(
-          `select ${fields} from ${model} ${
-            clause ? `where ${clause}` : ""
-          } limit 1`
-        );
+        const sql = `select ${fields} from ${model} ${
+          clause ? `where ${clause}` : ""
+        } limit 1`;
+        const stmt = db.prepare(sql);
         const result = stmt.get(...values);
+        console.log("findOne", {
+          rawModel,
+          model,
+          where,
+          select,
+          clause,
+          values,
+          fields,
+          sql,
+          result,
+        });
+
         return (result as any) ?? null;
       };
       return {

@@ -28,9 +28,6 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
   beforeAll(() => {
     resetTestDb();
   });
-  beforeEach(() => {
-    resetTestDb();
-  });
   afterAll(() => {
     // leave test.db for inspection
   });
@@ -42,7 +39,7 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
     disableTests: {
       CREATE_MODEL: false,
       CREATE_MODEL_SHOULD_ALWAYS_RETURN_AN_ID: false,
-      FIND_MODEL: true,
+      FIND_MODEL: false,
       FIND_MODEL_WITHOUT_ID: true,
       FIND_MODEL_WITH_SELECT: true,
       FIND_MODEL_WITH_MODIFIED_FIELD_NAME: true,
