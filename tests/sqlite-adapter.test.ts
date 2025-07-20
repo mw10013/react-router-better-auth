@@ -15,27 +15,27 @@ const SCHEMA_PATH = path.resolve(
   "../better-auth_migrations/schema.sql"
 );
 
-function resetTestDb() {
+function resetTestDb(insertUser = false) {
   if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
   const db = new Database(TEST_DB_PATH);
   const schema = fs.readFileSync(SCHEMA_PATH, "utf8");
   db.exec(schema);
-
-  // Insert a sample user for testing
-  // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
-  // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
-  db.exec(`
+  if (insertUser) {
+    // Insert a sample user for testing
+    // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
+    // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
+    db.exec(`
 insert into User (name, email, emailVerified, createdAt, updatedAt) 
 values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
-  `);
-
+    `);
+  }
   db.close();
 }
 
 //
 describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
   beforeAll(() => {
-    resetTestDb();
+    resetTestDb(true);
   });
   afterAll(() => {
     // leave test.db for inspection
