@@ -26,7 +26,7 @@ function resetTestDb() {
   // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
   db.exec(`
 insert into User (name, email, emailVerified, createdAt, updatedAt) 
-values ('John Doe', 'john@example.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
+values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
   `);
 
   db.close();
@@ -58,16 +58,16 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
       SHOULD_FIND_MANY_WITH_OPERATORS: false,
       SHOULD_WORK_WITH_REFERENCE_FIELDS: false,
       SHOULD_FIND_MANY_WITH_SORT_BY: false,
-      SHOULD_FIND_MANY_WITH_LIMIT: true,
-      SHOULD_FIND_MANY_WITH_OFFSET: true,
-      SHOULD_UPDATE_WITH_MULTIPLE_WHERE: true,
-      DELETE_MODEL: true,
-      SHOULD_DELETE_MANY: true,
-      SHOULD_NOT_THROW_ON_DELETE_RECORD_NOT_FOUND: true,
-      SHOULD_NOT_THROW_ON_RECORD_NOT_FOUND: true,
-      SHOULD_FIND_MANY_WITH_CONTAINS_OPERATOR: true,
-      SHOULD_SEARCH_USERS_WITH_STARTS_WITH: true,
-      SHOULD_SEARCH_USERS_WITH_ENDS_WITH: true,
+      SHOULD_FIND_MANY_WITH_LIMIT: false,
+      SHOULD_FIND_MANY_WITH_OFFSET: false,
+      SHOULD_UPDATE_WITH_MULTIPLE_WHERE: false,
+      DELETE_MODEL: false,
+      SHOULD_DELETE_MANY: false,
+      SHOULD_NOT_THROW_ON_DELETE_RECORD_NOT_FOUND: false,
+      SHOULD_NOT_THROW_ON_RECORD_NOT_FOUND: false,
+      SHOULD_FIND_MANY_WITH_CONTAINS_OPERATOR: false,
+      SHOULD_SEARCH_USERS_WITH_STARTS_WITH: false,
+      SHOULD_SEARCH_USERS_WITH_ENDS_WITH: false,
       SHOULD_PREFER_GENERATE_ID_IF_PROVIDED: true,
     },
   });

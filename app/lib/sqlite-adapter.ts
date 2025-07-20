@@ -225,7 +225,7 @@ export const sqliteAdapter = (db: Database) =>
           offset,
           sql,
           params,
-          schema: JSON.stringify(schema, null, 2),
+          // schema: JSON.stringify(schema, null, 2),
         });
         const stmt = db.prepare(sql);
         const result = stmt.all(...params) as any[];
