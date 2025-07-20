@@ -25,8 +25,71 @@ export const sqliteAdapter = (db: Database) =>
       const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
       const whereToSql = (where?: Where[]) => {
         if (!where || where.length === 0) return { clause: "", values: [] };
-        const clause = where.map((w) => `${w.field} = ?`).join(" and ");
-        const values = where.map((w) => w.value);
+        const clauses: string[] = [];
+        const values: any[] = [];
+        for (let i = 0; i < where.length; i++) {
+          const w = where[i];
+          const op = w.operator || "eq";
+          let sql = "";
+          switch (op) {
+            case "eq":
+              sql = `${w.field} = ?`;
+              values.push(w.value);
+              break;
+            case "ne":
+              sql = `${w.field} <> ?`;
+              values.push(w.value);
+              break;
+            case "lt":
+              sql = `${w.field} < ?`;
+              values.push(w.value);
+              break;
+            case "lte":
+              sql = `${w.field} <= ?`;
+              values.push(w.value);
+              break;
+            case "gt":
+              sql = `${w.field} > ?`;
+              values.push(w.value);
+              break;
+            case "gte":
+              sql = `${w.field} >= ?`;
+              values.push(w.value);
+              break;
+            case "in":
+              if (Array.isArray(w.value) && w.value.length > 0) {
+                sql = `${w.field} in (${w.value.map(() => "?").join(",")})`;
+                values.push(...w.value);
+              } else {
+                sql = "0"; // always false
+              }
+              break;
+            case "contains":
+              sql = `${w.field} like '%' || ? || '%'`;
+              values.push(w.value);
+              break;
+            case "starts_with":
+              sql = `${w.field} like ? || '%'`;
+              values.push(w.value);
+              break;
+            case "ends_with":
+              sql = `${w.field} like '%' || ?`;
+              values.push(w.value);
+              break;
+            default:
+              throw new Error(`Unsupported where operator: ${op}`);
+          }
+          clauses.push(sql);
+        }
+        // connectors: default to 'and', but support 'or' if specified
+        let clause = "";
+        if (clauses.length > 0) {
+          clause = clauses[0];
+          for (let i = 1; i < clauses.length; i++) {
+            const connector = (where[i].connector || "AND").toLowerCase();
+            clause = `${clause} ${connector} ${clauses[i]}`;
+          }
+        }
         return { clause, values };
       };
       const create: CustomAdapter["create"] = async ({
