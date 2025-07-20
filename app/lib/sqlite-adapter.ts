@@ -1,4 +1,5 @@
 import { createAdapter, type CreateCustomAdapter } from "better-auth/adapters";
+import type { Where } from "better-auth/types";
 import type { Database } from "better-sqlite3";
 
 type CustomAdapter = ReturnType<CreateCustomAdapter>;
@@ -20,9 +21,9 @@ export const sqliteAdapter = (db: Database) =>
       disableIdGeneration: true,
       debugLogs: true,
     },
-    adapter: () => {
+    adapter: ({ getFieldName, schema }) => {
       const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-      const whereToSql = (where?: Array<{ field: string; value: any }>) => {
+      const whereToSql = (where?: Where[]) => {
         if (!where || where.length === 0) return { clause: "", values: [] };
         const clause = where.map((w) => `${w.field} = ?`).join(" and ");
         const values = where.map((w) => w.value);
@@ -161,6 +162,7 @@ export const sqliteAdapter = (db: Database) =>
           offset,
           sql,
           params,
+          schema: JSON.stringify(schema, null, 2),
         });
         const stmt = db.prepare(sql);
         const result = stmt.all(...params) as any[];
