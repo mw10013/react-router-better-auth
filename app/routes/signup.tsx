@@ -19,7 +19,6 @@ export async function action({ request }: { request: Request }) {
       email,
       password,
       name: "",
-      callbackURL: "/",
     },
     asResponse: true,
   });

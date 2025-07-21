@@ -2,7 +2,9 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { createRoutesStub } from "react-router";
 import RouteComponent from "../app/routes/signup";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
+import { resetTestDb } from "./test-utils";
+import { action } from "../app/routes/signup";
 
 describe("Sign Up", () => {
   it("renders the signup form", () => {
@@ -18,5 +20,26 @@ describe("Sign Up", () => {
     expect(
       screen.getByRole("button", { name: /sign up/i })
     ).toBeInTheDocument();
+  });
+});
+
+describe("signup action", () => {
+  beforeAll(() => {
+    resetTestDb();
+  });
+  it("redirects to / and sets cookie on successful signup", async () => {
+    const email = "testuser@example.com";
+    const password = "testpassword123";
+    const form = new FormData();
+    form.append("email", email);
+    form.append("password", password);
+    const request = new Request("http://localhost/signup", {
+      method: "POST",
+      body: form,
+    });
+    const result = await action({ request });
+    expect(result.status).toBe(302);
+    expect(result.headers.get("location")).toBe("/");
+    expect(result.headers.has("set-cookie")).toBe(true);
   });
 });
