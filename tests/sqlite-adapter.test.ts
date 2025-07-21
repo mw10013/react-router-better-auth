@@ -9,16 +9,15 @@ import {
 } from "better-auth/adapters/test";
 import { sqliteAdapter } from "../app/lib/sqlite-adapter";
 
-const TEST_DB_PATH = path.resolve(__dirname, "../test.db");
-const SCHEMA_PATH = path.resolve(
-  __dirname,
-  "../better-auth_migrations/schema.sql"
-);
-
 function resetTestDb() {
-  if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
-  const db = new Database(TEST_DB_PATH);
-  const schema = fs.readFileSync(SCHEMA_PATH, "utf8");
+  const dbFile = process.env.DB_FILENAME;
+  if (!dbFile) throw new Error("DB_FILENAME env var must be set");
+  if (fs.existsSync(dbFile)) fs.unlinkSync(dbFile);
+  const db = new Database(dbFile);
+  const schema = fs.readFileSync(
+    path.resolve(__dirname, "../better-auth_migrations/schema.sql"),
+    "utf8"
+  );
   db.exec(schema);
   // Insert a sample user for testing
   // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
@@ -40,7 +39,7 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
   });
   runAdapterTest({
     getAdapter: async (options = {}) => {
-      const db = new Database(TEST_DB_PATH);
+      const db = new Database(process.env.DB_FILENAME);
       return sqliteAdapter(db)(options);
     },
     disableTests: {
@@ -80,7 +79,7 @@ describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", () => {
   });
   runNumberIdAdapterTest({
     getAdapter: async (options = {}) => {
-      const db = new Database(TEST_DB_PATH);
+      const db = new Database(process.env.DB_FILENAME);
       return sqliteAdapter(db)(options);
     },
     disableTests: {
