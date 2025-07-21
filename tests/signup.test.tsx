@@ -4,7 +4,7 @@ import { createRoutesStub } from "react-router";
 import RouteComponent from "../app/routes/signup";
 import { describe, it, expect } from "vitest";
 
-describe.skip("Sign Up", () => {
+describe("Sign Up", () => {
   it("renders the signup form", () => {
     const Stub = createRoutesStub([
       { path: "/signup", Component: RouteComponent },
