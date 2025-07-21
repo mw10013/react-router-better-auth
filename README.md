@@ -2,7 +2,6 @@
 ```
 pnpm exec cli generate
 pnpm exec cli migrate
-pnpm env -g list
 ```
 
 # Welcome to React Router!
