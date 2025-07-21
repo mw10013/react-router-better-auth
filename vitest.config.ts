@@ -4,5 +4,8 @@ export default defineConfig({
   test: {
     setupFiles: ["./tests/setup.ts"],
     environment: "jsdom",
+    env: {
+      DB_FILENAME: "./test.db",
+    },
   },
 });
