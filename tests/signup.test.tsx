@@ -41,5 +41,17 @@ describe("signup action", () => {
     expect(result.status).toBe(302);
     expect(result.headers.get("location")).toBe("/");
     expect(result.headers.has("set-cookie")).toBe(true);
+
+    // Try to sign up again with the same email/password
+    const dupForm = new FormData();
+    dupForm.append("email", email);
+    dupForm.append("password", password);
+    const dupRequest = new Request("http://localhost/signup", {
+      method: "POST",
+      body: dupForm,
+    });
+    const dupResult = await action({ request: dupRequest });
+    expect(dupResult.status).toBe(302);
+    expect(dupResult.headers.get("location")).toBe("/signin");
   });
 });
