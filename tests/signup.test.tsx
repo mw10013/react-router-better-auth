@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { createRoutesStub } from "react-router";
-import RouteComponent from "~/routes/signup";
+import RouteComponent from "../app/routes/signup";
 import { describe, it, expect } from "vitest";
 
 describe.skip("Sign Up", () => {
