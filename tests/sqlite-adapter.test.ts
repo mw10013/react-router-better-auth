@@ -1,38 +1,24 @@
 //
 import { describe, afterAll, beforeAll, beforeEach, test } from "vitest";
 import Database from "better-sqlite3";
-import fs from "fs";
-import path from "path";
+import { resetTestDb } from "./test-utils";
 import {
   runAdapterTest,
   runNumberIdAdapterTest,
 } from "better-auth/adapters/test";
 import { sqliteAdapter } from "../app/lib/sqlite-adapter";
 
-function resetTestDb() {
-  const dbFile = process.env.DB_FILENAME;
-  if (!dbFile) throw new Error("DB_FILENAME env var must be set");
-  if (fs.existsSync(dbFile)) fs.unlinkSync(dbFile);
-  const db = new Database(dbFile);
-  const schema = fs.readFileSync(
-    path.resolve(__dirname, "../better-auth_migrations/schema.sql"),
-    "utf8"
-  );
-  db.exec(schema);
-  // Insert a sample user for testing
-  // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
-  // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
-  db.exec(`
-insert into User (name, email, emailVerified, createdAt, updatedAt) 
-values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
-  `);
-  db.close();
-}
-
 //
 describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
   beforeAll(() => {
-    resetTestDb();
+    // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
+    // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
+    resetTestDb((db) => {
+      db.exec(`
+        insert into User (name, email, emailVerified, createdAt, updatedAt)
+        values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
+      `);
+    });
   });
   afterAll(() => {
     // leave test.db for inspection
@@ -72,7 +58,14 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
 
 describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", () => {
   beforeAll(() => {
-    resetTestDb();
+    // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
+    // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
+    resetTestDb((db) => {
+      db.exec(`
+        insert into User (name, email, emailVerified, createdAt, updatedAt)
+        values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
+      `);
+    });
   });
   afterAll(() => {
     // leave test.db for inspection
