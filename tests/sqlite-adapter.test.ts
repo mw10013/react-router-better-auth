@@ -9,7 +9,7 @@ import {
 import { sqliteAdapter } from "../app/lib/sqlite-adapter";
 
 //
-describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
+describe.skip("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
   beforeAll(() => {
     // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
     // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.

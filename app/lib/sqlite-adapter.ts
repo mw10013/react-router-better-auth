@@ -19,9 +19,9 @@ export const sqliteAdapter = (db: Database) =>
       supportsDates: false,
       supportsBooleans: false,
       disableIdGeneration: true,
-      debugLogs: true,
+      debugLogs: false,
     },
-    adapter: ({ getFieldName, schema }) => {
+    adapter: ({ schema }) => {
       const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
       const whereToSql = (where?: Where[]) => {
         if (!where || where.length === 0) return { clause: "", values: [] };
@@ -103,7 +103,7 @@ export const sqliteAdapter = (db: Database) =>
         const sql = `insert into ${model} (${keys.join(
           ","
         )}) values (${placeholders}) returning *`;
-        console.log("create", { model, keys, values, placeholders, sql });
+        // console.log("create", { model, keys, values, placeholders, sql });
         const stmt = db.prepare(sql);
         return stmt.get(...values) as typeof data;
       };
@@ -120,17 +120,17 @@ export const sqliteAdapter = (db: Database) =>
         } limit 1`;
         const stmt = db.prepare(sql);
         const result = stmt.get(...values);
-        console.log("findOne", {
-          rawModel,
-          model,
-          where,
-          select,
-          clause,
-          values,
-          fields,
-          sql,
-          result,
-        });
+        // console.log("findOne", {
+        //   rawModel,
+        //   model,
+        //   where,
+        //   select,
+        //   clause,
+        //   values,
+        //   fields,
+        //   sql,
+        //   result,
+        // });
         return result as any;
       };
 
@@ -214,19 +214,19 @@ export const sqliteAdapter = (db: Database) =>
         if (sortBy) sql += ` order by ${sortBy.field} ${sortBy.direction}`;
         if (limit) sql += ` limit ${limit}`;
         if (offset) sql += ` offset ${offset}`;
-        console.log("findMany", {
-          rawModel,
-          model,
-          where,
-          // clause,
-          // values,
-          sortBy,
-          limit,
-          offset,
-          sql,
-          params,
-          // schema: JSON.stringify(schema, null, 2),
-        });
+        // console.log("findMany", {
+        //   rawModel,
+        //   model,
+        //   where,
+        //   // clause,
+        //   // values,
+        //   sortBy,
+        //   limit,
+        //   offset,
+        //   sql,
+        //   params,
+        //   // schema: JSON.stringify(schema, null, 2),
+        // });
         const stmt = db.prepare(sql);
         const result = stmt.all(...params) as any[];
         return result;
@@ -247,18 +247,18 @@ export const sqliteAdapter = (db: Database) =>
         } returning *`;
         const stmt = db.prepare(sql);
         const result = (stmt.get(...setValues, ...values) as any) ?? null;
-        console.log("update", {
-          rawModel,
-          model,
-          where,
-          update,
-          set,
-          setValues,
-          clause,
-          values,
-          sql,
-          result,
-        });
+        // console.log("update", {
+        //   rawModel,
+        //   model,
+        //   where,
+        //   update,
+        //   set,
+        //   setValues,
+        //   clause,
+        //   values,
+        //   sql,
+        //   result,
+        // });
         return result;
       };
       return {
