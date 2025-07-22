@@ -30,5 +30,8 @@ export function resetTestDb(initDb?: (db: Database.Database) => void) {
   );
   db.exec(schema);
   if (initDb) initDb(db);
+
+  // Force a checkpoint to commit all changes before closing.
+  db.pragma("wal_checkpoint(RESTART)");
   db.close();
 }
