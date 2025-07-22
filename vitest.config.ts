@@ -7,5 +7,8 @@ export default defineConfig({
     env: {
       DB_FILENAME: "./test.db",
     },
+    sequence: {
+      concurrent: false,
+    },
   },
 });

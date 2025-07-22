@@ -65,16 +65,16 @@ export const sqliteAdapter = (db: Database) =>
               }
               break;
             case "contains":
-              sql = `${w.field} like '%' || ? || '%'`;
-              values.push(w.value);
+              sql = `${w.field} like ?`;
+              values.push(`%${w.value}%`);
               break;
             case "starts_with":
-              sql = `${w.field} like ? || '%'`;
-              values.push(w.value);
+              sql = `${w.field} like ?`;
+              values.push(`${w.value}%`);
               break;
             case "ends_with":
-              sql = `${w.field} like '%' || ?`;
-              values.push(w.value);
+              sql = `${w.field} like ?`;
+              values.push(`%${w.value}`);
               break;
             default:
               throw new Error(`Unsupported where operator: ${op}`);
