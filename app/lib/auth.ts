@@ -29,7 +29,7 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    // requireEmailVerification: true,
+    requireEmailVerification: true,
     // sendResetPassword: async ({ user, url, token }, request) => {
     //   console.log("Stub: sendResetPassword", { to: user.email, url, token });
     // },

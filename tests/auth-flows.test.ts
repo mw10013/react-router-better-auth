@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { resetTestDb } from "./test-utils";
 import { action } from "../app/routes/signup";
 
-describe.only("auth flows", () => {
+describe("auth flows", () => {
   beforeAll(() => {
     resetTestDb();
   });
