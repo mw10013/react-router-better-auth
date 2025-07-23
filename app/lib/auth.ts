@@ -29,13 +29,13 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
-    sendResetPassword: async ({ user, url, token }, request) => {
-      console.log("Stub: sendResetPassword", { to: user.email, url, token });
-    },
-    onPasswordReset: async ({ user }, request) => {
-      console.log(`Stub: Password for user ${user.email} has been reset.`);
-    },
+    // requireEmailVerification: true,
+    // sendResetPassword: async ({ user, url, token }, request) => {
+    //   console.log("Stub: sendResetPassword", { to: user.email, url, token });
+    // },
+    // onPasswordReset: async ({ user }, request) => {
+    //   console.log(`Stub: Password for user ${user.email} has been reset.`);
+    // },
   },
   advanced: {
     database: {
