@@ -7,7 +7,7 @@ describe("auth flows", () => {
     resetTestDb();
   });
 
-  it("signs up successfully, then duplicate signup redirects to /signin", async () => {
+  it("signs up", async () => {
     const email = "testuser@example.com";
     const password = "testpassword123";
     const form = new FormData();
