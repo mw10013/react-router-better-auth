@@ -4,7 +4,7 @@ import { sqliteAdapter } from "./sqlite-adapter";
 
 // const db = new Database(process.env.DB_FILENAME || "./sqlite.db");
 
-export function createBetterAuth({
+export function createAuth({
   database,
   ...options
 }: Partial<BetterAuthOptions> = {}) {
@@ -52,4 +52,4 @@ export function createBetterAuth({
   });
 }
 
-export const auth = createBetterAuth();
+export const auth = createAuth();

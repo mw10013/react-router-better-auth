@@ -1,29 +1,20 @@
 import type { Route } from "./+types/signup";
 import { Form } from "react-router";
-import { auth } from "../lib/auth";
 import { redirect } from "react-router";
 import { appLoadContext } from "~/lib/middleware";
-
-export const signUpMiddleware: Route.unstable_MiddlewareFunction = async ({
-  context,
-}) => {
-  const { test } = context.get(appLoadContext);
-  console.log("[signUpMiddleware]", test);
-};
-
-export const unstable_middleware = [signUpMiddleware];
 
 export async function loader() {
   return {};
 }
 
-export async function action({ request }: { request: Request }) {
+export async function action({ request, context }: Route.ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
   if (typeof email !== "string" || typeof password !== "string") {
     throw new Error("Invalid form data");
   }
+  const { auth } = context.get(appLoadContext);
   const response = await auth.api.signUpEmail({
     body: {
       email,
