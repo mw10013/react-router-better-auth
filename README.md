@@ -4,6 +4,12 @@ pnpm exec cli generate
 pnpm exec cli migrate
 ```
 
+```
+git clone https://github.com/better-auth/better-auth.git
+git tag | grep v1.3.3
+git switch -c test/v1.3.3 v1.3.3
+```
+
 # Welcome to React Router!
 
 A modern, production-ready template for building full-stack React applications using React Router.
