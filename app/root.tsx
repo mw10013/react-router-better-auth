@@ -9,6 +9,17 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { appLoadContext } from "./lib/middleware";
+
+export const rootMiddleware: Route.unstable_MiddlewareFunction = async ({
+  context,
+}) => {
+  console.log("[rootMiddleware]");
+  context.set(appLoadContext, { test: "hello from rootMiddleware" });
+};
+
+export const unstable_middleware = [rootMiddleware];
+
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

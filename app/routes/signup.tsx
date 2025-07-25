@@ -2,6 +2,24 @@ import type { Route } from "./+types/signup";
 import { Form } from "react-router";
 import { auth } from "../lib/auth";
 import { redirect } from "react-router";
+import { appLoadContext } from "~/lib/middleware";
+
+export const signUpMiddleware: Route.unstable_MiddlewareFunction = async ({
+  context,
+}) => {
+  console.log("[signUpMiddleware]");
+  const { test } = context.get(appLoadContext)
+  console.log("[signUpMiddleware]", test);
+
+  // Debug: log appLoadContext in middleware
+  // eslint-disable-next-line no-console
+  // console.log("[middleware] appLoadContext:", appLoadContext);
+  // const ctx = context.get(appLoadContext);
+  // eslint-disable-next-line no-console
+  // console.log("middleware test property:", ctx?.test);
+};
+
+export const unstable_middleware = [signUpMiddleware];
 
 export async function loader() {
   return {};
