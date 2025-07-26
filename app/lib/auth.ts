@@ -2,10 +2,10 @@ import { betterAuth, type BetterAuthOptions } from "better-auth";
 import Database from "better-sqlite3";
 import { sqliteAdapter } from "./sqlite-adapter";
 
-export function createAuth({
+export function createAuth<T extends Partial<BetterAuthOptions>>({
   database,
   ...options
-}: Partial<BetterAuthOptions> = {}) {
+}: T = {} as T) {
   return betterAuth({
     // database: database ?? sqliteAdapter(db),
     database: database ?? new Database("./sqlite.db"),

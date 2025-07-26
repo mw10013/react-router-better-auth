@@ -1,11 +1,20 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { unstable_RouterContextProvider } from "react-router";
 import { getTestContext } from "./test-utils";
 import { action } from "../app/routes/signup";
 import { appLoadContext } from "~/lib/middleware";
 
 describe("auth flows", async () => {
+  const mockFn = vi.fn();
   const { auth } = await getTestContext();
+  // const { auth } = await getTestContext({
+  //   emailVerification: {
+  //     sendOnSignUp: true,
+  //     sendVerificationEmail: async ({ user, url, token }, request) => {
+  //       mockFn(user, url);
+  //     },
+  //   },
+  // });
 
   it("signs up", async () => {
     const email = "testuser@example.com";
