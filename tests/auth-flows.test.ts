@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeAll } from "vitest";
-import { resetTestDb } from "./test-utils";
+import { describe, it, expect } from "vitest";
+import { unstable_RouterContextProvider } from "react-router";
+import { getTestContext } from "./test-utils";
 import { action } from "../app/routes/signup";
+import { appLoadContext } from "~/lib/middleware";
 
-describe("auth flows", () => {
-  beforeAll(() => {
-    resetTestDb();
-  });
-
+describe("auth flows", async () => {
+    const { auth } = await getTestContext();
+  
   it("signs up", async () => {
     const email = "testuser@example.com";
     const password = "testpassword123";
@@ -17,7 +17,9 @@ describe("auth flows", () => {
       method: "POST",
       body: form,
     });
-    const result = await action({ request });
+    const context = new unstable_RouterContextProvider();
+    context.set(appLoadContext, { auth });
+    const result = await action({ request, context, params: {} });
     expect(result.status).toBe(302);
     expect(result.headers.get("location")).toBe("/");
     expect(result.headers.has("set-cookie")).toBe(true);
