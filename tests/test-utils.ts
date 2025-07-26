@@ -4,10 +4,15 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { afterAll } from "vitest";
 import { createAuth } from "../app/lib/auth";
+import type { BetterAuthOptions } from "better-auth/types";
 
-export async function getTestContext({
+export async function getTestContext<T extends Partial<BetterAuthOptions>>({
   initDb,
-}: { initDb?: (db: Database.Database) => void } = {}) {
+  betterAuthOptions,
+}: {
+  betterAuthOptions?: T;
+  initDb?: (db: Database.Database) => void;
+} = {}) {
   await fs.mkdir(".db", { recursive: true });
   const databaseName = `./.db/test-${randomUUID()}.db`;
   const database = new Database(databaseName);
@@ -21,7 +26,7 @@ export async function getTestContext({
     await fs.unlink(databaseName);
   });
   return {
-    auth: createAuth({ database }),
+    auth: createAuth({ database, ...betterAuthOptions }),
     database,
   };
 }
