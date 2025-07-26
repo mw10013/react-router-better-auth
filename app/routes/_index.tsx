@@ -1,8 +1,9 @@
-import { auth } from "~/lib/auth";
+import { appLoadContext } from "~/lib/middleware";
 import type { Route } from "./+types/_index";
 import { Link, Form } from "react-router";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const { auth } = context.get(appLoadContext);
   const session = await auth.api.getSession({ headers: request.headers });
   return { user: session?.user ?? null };
 }
