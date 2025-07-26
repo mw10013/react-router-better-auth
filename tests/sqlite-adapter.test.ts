@@ -8,11 +8,11 @@ import {
 import { sqliteAdapter } from "../app/lib/sqlite-adapter";
 
 describe("sqliteAdapter (Better Auth) - General Adapter Compliance", async () => {
-  const { db } = await getTestContext({
-    // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
-    // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
-    initDb: (db) => {
-      db.exec(`
+  // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
+  // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
+  const { database } = await getTestContext({
+    initDb: (database) => {
+      database.exec(`
         insert into User (name, email, emailVerified, createdAt, updatedAt)
         values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
       `);
@@ -20,7 +20,7 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", async () =>
   });
   runAdapterTest({
     getAdapter: async (options = {}) => {
-      return sqliteAdapter(db)(options);
+      return sqliteAdapter(database)(options);
     },
     disableTests: {
       CREATE_MODEL: false,
@@ -51,11 +51,11 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", async () =>
 });
 
 describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", async () => {
-  const { db } = await getTestContext({
-    // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
-    // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
-    initDb: (db) => {
-      db.exec(`
+  // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
+  // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
+  const { database } = await getTestContext({
+    initDb: (database) => {
+      database.exec(`
         insert into User (name, email, emailVerified, createdAt, updatedAt)
         values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
       `);
@@ -63,7 +63,7 @@ describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", async () => {
   });
   runNumberIdAdapterTest({
     getAdapter: async (options = {}) => {
-      return sqliteAdapter(db)(options);
+      return sqliteAdapter(database)(options);
     },
     disableTests: {
       SHOULD_RETURN_A_NUMBER_ID_AS_A_RESULT: false,
