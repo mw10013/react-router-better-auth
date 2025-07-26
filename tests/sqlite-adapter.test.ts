@@ -1,30 +1,25 @@
 //
-import { describe, afterAll, beforeAll, beforeEach, test } from "vitest";
-import Database from "better-sqlite3";
-import { resetTestDb } from "./test-utils";
+import { describe } from "vitest";
+import { getTestContext } from "./test-utils";
 import {
   runAdapterTest,
   runNumberIdAdapterTest,
 } from "better-auth/adapters/test";
 import { sqliteAdapter } from "../app/lib/sqlite-adapter";
 
-describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
-  beforeAll(() => {
+describe("sqliteAdapter (Better Auth) - General Adapter Compliance", async () => {
+  const { db } = await getTestContext({
     // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
     // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
-    resetTestDb((db) => {
+    initDb: (db) => {
       db.exec(`
         insert into User (name, email, emailVerified, createdAt, updatedAt)
         values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
       `);
-    });
-  });
-  afterAll(() => {
-    // leave test.db for inspection
+    },
   });
   runAdapterTest({
     getAdapter: async (options = {}) => {
-      const db = new Database(process.env.DB_FILENAME);
       return sqliteAdapter(db)(options);
     },
     disableTests: {
@@ -55,23 +50,19 @@ describe("sqliteAdapter (Better Auth) - General Adapter Compliance", () => {
   });
 });
 
-describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", () => {
-  beforeAll(() => {
+describe("sqliteAdapter (Better Auth) - Numeric ID Compliance", async () => {
+  const { db } = await getTestContext({
     // FIND_MODEL_WITH_MODIFIED_FIELD_NAME is disabled because we do not handle email_address vs email
     // Subsequent tests expect FIND_MODEL_WITH_MODIFIED_FIELD_NAME to have created a user so we create one here.
-    resetTestDb((db) => {
+    initDb: (db) => {
       db.exec(`
         insert into User (name, email, emailVerified, createdAt, updatedAt)
         values ('test-name-with-modified-field', 'test-email-with-modified-field@email.com', 1, '${new Date().toISOString()}', '${new Date().toISOString()}');
       `);
-    });
-  });
-  afterAll(() => {
-    // leave test.db for inspection
+    },
   });
   runNumberIdAdapterTest({
     getAdapter: async (options = {}) => {
-      const db = new Database(process.env.DB_FILENAME);
       return sqliteAdapter(db)(options);
     },
     disableTests: {
