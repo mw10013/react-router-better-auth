@@ -5,8 +5,8 @@ import { action } from "../app/routes/signup";
 import { appLoadContext } from "~/lib/middleware";
 
 describe("auth flows", async () => {
-    const { auth } = await getTestContext();
-  
+  const { auth } = await getTestContext();
+
   it("signs up", async () => {
     const email = "testuser@example.com";
     const password = "testpassword123";
@@ -24,15 +24,19 @@ describe("auth flows", async () => {
     expect(result.headers.get("location")).toBe("/");
     expect(result.headers.has("set-cookie")).toBe(true);
 
-    // const dupForm = new FormData();
-    // dupForm.append("email", email);
-    // dupForm.append("password", password);
-    // const dupRequest = new Request("http://localhost/signup", {
-    //   method: "POST",
-    //   body: dupForm,
-    // });
-    // const dupResult = await action({ request: dupRequest });
-    // expect(dupResult.status).toBe(302);
-    // expect(dupResult.headers.get("location")).toBe("/signin");
+    const dupForm = new FormData();
+    dupForm.append("email", email);
+    dupForm.append("password", password);
+    const dupRequest = new Request("http://localhost/signup", {
+      method: "POST",
+      body: dupForm,
+    });
+    const dupResult = await action({
+      request: dupRequest,
+      context,
+      params: {},
+    });
+    expect(dupResult.status).toBe(302);
+    expect(dupResult.headers.get("location")).toBe("/signin");
   });
 });
