@@ -67,12 +67,13 @@ describe("auth flows sign up basic", async () => {
     const signUpEmailResponse1Body = await signUpEmailResponse1.json();
     expect(signUpEmailResponse1Body?.code).toBe("USER_ALREADY_EXISTS");
 
-    // const signInEmailResult = await auth.api.signInEmail({
-    //   asResponse: true,
-    //   body: { email, password },
-    // });
-    // console.log("signInEmailResult:", signInEmailResult);
-    // console.log("body", await signInEmailResult.json());
+    const signInEmailResponse = await auth.api.signInEmail({
+      asResponse: true,
+      body: { email, password },
+    });
+    expect(signInEmailResponse.status).toBe(403);
+    const signInEmailResponseBody = await signInEmailResponse.json();
+    expect(signInEmailResponseBody?.code).toBe("EMAIL_NOT_VERIFIED");
   });
 });
 
