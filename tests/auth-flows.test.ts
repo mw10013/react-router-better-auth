@@ -74,6 +74,7 @@ describe("auth flows sign up basic", async () => {
     expect(signInEmailResponse.status).toBe(403);
     const signInEmailResponseBody = await signInEmailResponse.json();
     expect(signInEmailResponseBody?.code).toBe("EMAIL_NOT_VERIFIED");
+    expect(mockSendVerificationEmail).toHaveBeenCalledTimes(2);
   });
 });
 
