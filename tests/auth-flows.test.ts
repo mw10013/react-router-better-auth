@@ -4,6 +4,7 @@ import { getTestContext } from "./test-utils";
 import { action } from "../app/routes/signup";
 import { appLoadContext } from "~/lib/middleware";
 import { signUpEmailTest } from "./signUpEmailTest";
+import { mock } from "node:test";
 
 // describe("signUpEmailTest", async () => {
 //   it("should signUpEmailTest", async () => {
@@ -13,6 +14,8 @@ import { signUpEmailTest } from "./signUpEmailTest";
 
 describe("auth flows sign up basic", async () => {
   const email = "email@test.com";
+  const password = "password";
+  const name = "";
 
   const mockSendVerificationEmail = vi.fn().mockResolvedValue(undefined);
   const { auth } = await getTestContext({
@@ -29,17 +32,15 @@ describe("auth flows sign up basic", async () => {
   });
 
   it("should signUpEmail", async () => {
-    const result = await auth.api.signUpEmail({
+    const signUpEmailResponse = await auth.api.signUpEmail({
       asResponse: true,
       body: {
         email,
-        password: "password",
-        name: "",
+        password,
+        name,
       },
     });
-    console.log("result", result);
-    console.log("body", await result.text());
-    // expect(result.token).toBeDefined();
+    expect(signUpEmailResponse.ok).toBe(true);
     expect(mockSendVerificationEmail).toHaveBeenCalledTimes(1);
     expect(mockSendVerificationEmail).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -47,15 +48,32 @@ describe("auth flows sign up basic", async () => {
       }),
       undefined
     );
-    // const accounts = await database.findMany({
-    // 	model: "account",
-    // });
-    // expect(accounts).toHaveLength(1);
-  });
+    console.log(
+      "token:",
+      mockSendVerificationEmail.mock.calls.at(0)?.at(0)?.token
+    );
+    const token = mockSendVerificationEmail.mock.calls.at(0)?.at(0)?.token;
+    expect(token).toBeDefined();
 
-  // it("should send verification email", async () => {
-  // 	expect(mockFn).toHaveBeenCalledWith(expect.any(Object), expect.any(String));
-  // });
+    const signUpEmailResponse1 = await auth.api.signUpEmail({
+      asResponse: true,
+      body: {
+        email,
+        password,
+        name,
+      },
+    });
+    expect(signUpEmailResponse1.status).toBe(422);
+    const signUpEmailResponse1Body = await signUpEmailResponse1.json();
+    expect(signUpEmailResponse1Body?.code).toBe("USER_ALREADY_EXISTS");
+
+    // const signInEmailResult = await auth.api.signInEmail({
+    //   asResponse: true,
+    //   body: { email, password },
+    // });
+    // console.log("signInEmailResult:", signInEmailResult);
+    // console.log("body", await signInEmailResult.json());
+  });
 });
 
 // describe("auth flows", async () => {
