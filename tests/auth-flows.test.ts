@@ -22,9 +22,6 @@ describe("auth flows sign up basic", async () => {
   const { auth } = await getTestContext({
     betterAuthOptions: {
       emailVerification: {
-        sendOnSignUp: true,
-        sendOnSignIn: true,
-        autoSignInAfterVerification: true,
         sendVerificationEmail: mockSendVerificationEmail,
       },
     },

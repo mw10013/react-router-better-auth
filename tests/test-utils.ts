@@ -33,16 +33,5 @@ export async function getTestContext<T extends Partial<BetterAuthOptions>>({
       ...betterAuthOptions,
     }),
     database,
-    rateLimit: {
-      enabled: false,
-    },
-    advanced: {
-      cookies: {},
-      disableCSRFCheck: true,
-      database: {
-        generateId: false,
-        useNumberId: true,
-      },
-    },
   };
 }
