@@ -3,8 +3,9 @@ import fs from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
 import { fileURLToPath } from "url";
+import { betterAuth } from "better-auth";
 
-import { betterAuth, type BetterAuthOptions } from "better-auth";
+// node --experimental-strip-types tests/script.ts
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
