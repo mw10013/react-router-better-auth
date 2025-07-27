@@ -77,6 +77,11 @@ describe("auth flows sign up basic", async () => {
     const signInEmailResponseBody = await signInEmailResponse.json();
     expect(signInEmailResponseBody?.code).toBe("EMAIL_NOT_VERIFIED");
     expect(mockSendVerificationEmail).toHaveBeenCalledTimes(2);
+    const emailVerificationUrl = mockSendVerificationEmail.mock.calls
+      .at(1)
+      ?.at(0)?.url;
+    expect(emailVerificationUrl).toBeDefined();
+    console.log("emailVerificationUrl:", emailVerificationUrl);
   });
 });
 

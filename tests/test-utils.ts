@@ -27,6 +27,7 @@ export async function getTestContext<T extends Partial<BetterAuthOptions>>({
   });
   return {
     auth: createAuth({
+      baseURL: "http://localhost:3000",
       secret: "better-auth.secret",
       database,
       ...betterAuthOptions,
