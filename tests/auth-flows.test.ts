@@ -73,8 +73,20 @@ describe("auth flows sign up basic", async () => {
     const signInEmailResponseBody = await signInEmailResponse.json();
     expect(signInEmailResponseBody?.code).toBe("EMAIL_NOT_VERIFIED");
     expect(mockSendVerificationEmail).toHaveBeenCalledTimes(2);
+
+    // http://localhost:3000/api/auth/verify-email?token=eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVtYWlsQHRlc3QuY29tIiwiaWF0IjoxNzUzNjU3MjY4LCJleHAiOjE3NTM2NjA4Njh9.Tpad-KErD99w5FOBoJuqhIakP13m-rWMjyWcveEIQSo&callbackURL=/dashboard
+    const verifyEmailRequestBad = new Request(
+      "http://localhost:3000/api/auth/verify-email?token=BADTOKEN&callbackURL=/dashboard"
+    );
+    const verifyEmailResponseBad = await auth.handler(verifyEmailRequestBad);
+    console.log("verifyEmailResponseBad:", verifyEmailResponseBad);
+    expect(verifyEmailResponseBad.status).toBe(302);
+    expect(verifyEmailResponseBad.headers.get("location")).toBe(
+      callbackURL + "?error=invalid_token"
+    );
+
     const emailVerificationUrl = mockSendVerificationEmail.mock.calls
-      .at(1)
+      .at(0)
       ?.at(0)?.url;
     expect(emailVerificationUrl).toBeDefined();
     console.log("emailVerificationUrl:", emailVerificationUrl);
