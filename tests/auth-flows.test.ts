@@ -6,6 +6,11 @@ import { appLoadContext } from "~/lib/middleware";
 import { signUpEmailTest } from "./signUpEmailTest";
 
 describe("signUpEmailTest", async () => {
+  it("should have the correct Uint8Array constructor", () => {
+    const arr = new Uint8Array();
+    expect(arr).toBeInstanceOf(Uint8Array);
+  });
+
   it("should signUpEmailTest", async () => {
     await signUpEmailTest();
   });
