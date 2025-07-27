@@ -2,12 +2,15 @@ import type { Route } from "./+types/signup";
 import { Form } from "react-router";
 import { redirect } from "react-router";
 import { appLoadContext } from "~/lib/middleware";
+import { signUpEmailTest } from "tests/signUpEmailTest";
 
 export async function loader() {
   return {};
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
+  await signUpEmailTest();
+
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
