@@ -26,7 +26,25 @@ export async function getTestContext<T extends Partial<BetterAuthOptions>>({
     await fs.unlink(databaseName);
   });
   return {
-    auth: createAuth({ database, ...betterAuthOptions }),
+    auth: createAuth({
+      secret: "better-auth.secret",
+      database,
+      ...betterAuthOptions,
+    }),
     database,
+    emailAndPassword: {
+      enabled: true,
+    },
+    rateLimit: {
+      enabled: false,
+    },
+    advanced: {
+      cookies: {},
+      disableCSRFCheck: true,
+      database: {
+        generateId: false,
+        useNumberId: true,
+      },
+    },
   };
 }
