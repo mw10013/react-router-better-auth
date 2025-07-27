@@ -2,10 +2,9 @@ import { betterAuth, type BetterAuthOptions } from "better-auth";
 import Database from "better-sqlite3";
 import { sqliteAdapter } from "./sqlite-adapter";
 
-export function createAuth<T extends Partial<BetterAuthOptions>>({
-  database,
-  ...options
-}: T = {} as T) {
+export function createAuth<T extends Partial<BetterAuthOptions>>(
+  { database, ...options }: T = {} as T
+) {
   return betterAuth({
     // database: database ?? sqliteAdapter(db),
     database: database ?? new Database("./sqlite.db"),
@@ -21,7 +20,20 @@ export function createAuth<T extends Partial<BetterAuthOptions>>({
     verification: {
       modelName: "Verification",
     },
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: true,
+      // sendResetPassword: async ({ user, url, token }, request) => {
+      //   console.log("Stub: sendResetPassword", { to: user.email, url, token });
+      // },
+      // onPasswordReset: async ({ user }, request) => {
+      //   console.log(`Stub: Password for user ${user.email} has been reset.`);
+      // },
+    },
     emailVerification: {
+      sendOnSignUp: true,
+      sendOnSignIn: true,
+      autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url, token }, request) => {
         console.log("Stub: sendVerificationEmail", {
           to: user.email,
@@ -29,16 +41,6 @@ export function createAuth<T extends Partial<BetterAuthOptions>>({
           token,
         });
       },
-    },
-    emailAndPassword: {
-      enabled: true,
-      // requireEmailVerification: true,
-      // sendResetPassword: async ({ user, url, token }, request) => {
-      //   console.log("Stub: sendResetPassword", { to: user.email, url, token });
-      // },
-      // onPasswordReset: async ({ user }, request) => {
-      //   console.log(`Stub: Password for user ${user.email} has been reset.`);
-      // },
     },
     advanced: {
       database: {

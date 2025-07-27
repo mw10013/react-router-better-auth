@@ -16,18 +16,15 @@ describe("auth flows sign up basic", async () => {
   const email = "email@test.com";
   const password = "password";
   const name = "";
+  const callbackURL = "/dashboard";
 
   const mockSendVerificationEmail = vi.fn().mockResolvedValue(undefined);
   const { auth } = await getTestContext({
     betterAuthOptions: {
-      emailAndPassword: {
-        enabled: true,
-        requireEmailVerification: true,
-      },
       emailVerification: {
         sendOnSignUp: true,
         sendOnSignIn: true,
-        // autoSignInAfterVerification: true,
+        autoSignInAfterVerification: true,
         sendVerificationEmail: mockSendVerificationEmail,
       },
     },
@@ -40,6 +37,7 @@ describe("auth flows sign up basic", async () => {
         email,
         password,
         name,
+        callbackURL,
       },
     });
     expect(signUpEmailResponse.ok).toBe(true);
@@ -63,6 +61,7 @@ describe("auth flows sign up basic", async () => {
         email,
         password,
         name,
+        callbackURL,
       },
     });
     expect(signUpEmailResponse1.status).toBe(422);
@@ -71,7 +70,7 @@ describe("auth flows sign up basic", async () => {
 
     const signInEmailResponse = await auth.api.signInEmail({
       asResponse: true,
-      body: { email, password },
+      body: { email, password, callbackURL },
     });
     expect(signInEmailResponse.status).toBe(403);
     const signInEmailResponseBody = await signInEmailResponse.json();
@@ -82,6 +81,12 @@ describe("auth flows sign up basic", async () => {
       ?.at(0)?.url;
     expect(emailVerificationUrl).toBeDefined();
     console.log("emailVerificationUrl:", emailVerificationUrl);
+
+    const verifyEmailRequest = new Request(emailVerificationUrl);
+    const verifyEmailResponse = await auth.handler(verifyEmailRequest);
+    console.log("verifyEmailResponse:", verifyEmailResponse);
+    expect(verifyEmailResponse.status).toBe(302);
+    expect(verifyEmailResponse.headers.get("location")).toBe(callbackURL);
   });
 });
 

@@ -33,9 +33,6 @@ export async function getTestContext<T extends Partial<BetterAuthOptions>>({
       ...betterAuthOptions,
     }),
     database,
-    emailAndPassword: {
-      enabled: true,
-    },
     rateLimit: {
       enabled: false,
     },
