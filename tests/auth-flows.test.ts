@@ -3,15 +3,21 @@ import { unstable_RouterContextProvider } from "react-router";
 import { getTestContext } from "./test-utils";
 import { action } from "../app/routes/signup";
 import { appLoadContext } from "~/lib/middleware";
+import { signUpEmailTest } from "./signUpEmailTest";
+
+describe("signUpEmailTest", async () => {
+  it("should signUpEmailTest", async () => {
+    await signUpEmailTest();
+  });
+})
 
 describe("auth flows basic", async () => {
   const mockFn = vi.fn();
-  // const { auth } = await getTestContext();
-  const { auth, database } = await getTestContext({
+  const { auth } = await getTestContext({
     betterAuthOptions: {
       emailAndPassword: {
         enabled: true,
-        requireEmailVerification: true,
+        // requireEmailVerification: true,
         sendResetPassword: async ({ user, url, token }, request) => {
           console.log("Stub: sendResetPassword", {
             to: user.email,
@@ -24,7 +30,7 @@ describe("auth flows basic", async () => {
         },
       },
       emailVerification: {
-        sendOnSignUp: true,
+        // sendOnSignUp: true,
         sendVerificationEmail: async ({ user, url, token }, request) => {
           mockFn(user, url);
         },
