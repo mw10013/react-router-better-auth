@@ -11,17 +11,14 @@
 
 - TypeScript: strict functional style, no comments, use interfaces, prefer immutability, concise inlining, and destructuring in function signatures.
 - All SQL is lowercased.
-- Imports follow:  
-  `import type { AppLoadContext, Session } from 'react-router'`  
-  `import { auth } from "~/lib/auth";`
-- Authentication logic is always accessed via the exported `auth` instance (`app/lib/auth.ts`), which wires up the SQLite adapter.
-- Route modules (`app/routes/*.tsx`) use React Router's data APIs (`loader`, `action`) and always return/redirect using the response from `auth.api.*`.
-- UI components are colocated with routes and use Tailwind utility classes.
+- Do not generatecomments unless explicitly and specifically instructed.
+- Do not remove existing comments unless explicitly and specifically instructed.
 
 ## Developer Workflows
 
 - Always use pnpm for all install, add, remove, and script commands (e.g., pnpm install, pnpm test).
 - **Dev server:** `pnpm dev` — runs with HMR at `http://localhost:5173`
+- **Test:** `pnpm test` — runs vitest tests
 - **Build:** `pnpm build` — outputs to `build/`
 - **Typecheck:** `pnpm typecheck`
 
@@ -39,13 +36,9 @@
   - Better Auth: https://www.better-auth.com/llms.txt
   - DB adapters: https://www.better-auth.com/docs/guides/create-a-db-adapter
 
-## Examples
-
-- See `app/routes/_index.tsx` for session-aware home, `app/routes/signin.tsx` and `app/routes/signup.tsx` for auth flows.
-
 ## Testing
 
-- Use vitest version 3.2.4.
+- Use vitest version 3.x
 - Your vitest knowledge is out of date so always consult the vitest documentation.
 - Dcoumentation links for vitest
   - Api: https://vitest.dev/api/
