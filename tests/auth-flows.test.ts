@@ -26,6 +26,8 @@ describe("auth flows sign up basic", async () => {
       },
       emailVerification: {
         sendOnSignUp: true,
+        sendOnSignIn: true,
+        // autoSignInAfterVerification: true,
         sendVerificationEmail: mockSendVerificationEmail,
       },
     },
