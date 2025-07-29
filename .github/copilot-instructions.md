@@ -11,7 +11,7 @@
 
 - TypeScript: strict functional style, no comments, use interfaces, prefer immutability, concise inlining, and destructuring in function signatures.
 - All SQL is lowercased.
-- Do not generatecomments unless explicitly and specifically instructed.
+- Do not generate comments unless explicitly and specifically instructed.
 - Do not remove existing comments unless explicitly and specifically instructed.
 
 ## Developer Workflows
