@@ -3,7 +3,6 @@ import type { Where } from "better-auth/types";
 import type { Database } from "better-sqlite3";
 
 type CustomAdapter = ReturnType<CreateCustomAdapter>;
-type FindOneArgs = Parameters<CustomAdapter["findOne"]>[0];
 
 /**
  * Better Auth test harness passes model names in lower-case (e.g., 'user'),
